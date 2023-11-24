@@ -1,0 +1,168 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+// Struct to represent an item
+struct Item {
+    string code;
+    string description;
+    double price;
+};
+
+
+// Function to display items and get user input
+int displayAndChoose(const vector<Item>& items, const string& category) {
+    cout << "\n" << category << " Items:" << endl;
+    for (size_t i = 0; i < items.size(); ++i) {
+        cout << i + 1 << ". " << items[i].code << " - " << items[i].description << " ($" << fixed << setprecision(2) << items[i].price << ")" << endl;
+    }
+
+    int choice;
+    cout << "\nChoose Only One " << category << " (1-" << items.size() << "): ";
+    cin >> choice;
+    return choice - 1;
+}
+
+// Task 1 - Setting up the system and ordering main items
+double task1() {
+    vector<Item> caseItems;
+    caseItems.push_back({"A1", "Compact", 75.00});
+    caseItems.push_back({"A2", "Tower", 150.00});
+
+    vector<Item> ramItems;
+    ramItems.push_back({"B1", "8 GB", 79.99});
+    ramItems.push_back({"B2", "16 GB", 149.99});
+    ramItems.push_back({"B3", "32 GB", 299.99});
+
+    vector<Item> hddItems;
+    hddItems.push_back({"C1", "1 TB HDD", 49.99});
+    hddItems.push_back({"C2", "2 TB HDD", 89.99});
+    hddItems.push_back({"C3", "4 TB HDD", 129.99});
+
+    double basicComponentsCost = 200.00;
+
+    // Choose case
+    int caseChoice = displayAndChoose(caseItems, "Case");
+    const Item& chosenCase = caseItems[caseChoice];
+
+    // Choose RAM
+    int ramChoice = displayAndChoose(ramItems, "RAM");
+    const Item& chosenRam = ramItems[ramChoice];
+
+    // Choose Main Hard Disk Drive
+    int hddChoice = displayAndChoose(hddItems, "Main Hard Disk Drive");
+    const Item& chosenHDD = hddItems[hddChoice];
+
+    // Calculate total cost
+    double totalCost = basicComponentsCost + chosenCase.price + chosenRam.price + chosenHDD.price;
+
+    cout << "\nMain Items Ordered:" << endl;
+    cout << "Case: " << chosenCase.code << " - " << chosenCase.description << " ($" << chosenCase.price << ")" << endl;
+    cout << "RAM: " << chosenRam.code << " - " << chosenRam.description << " ($" << chosenRam.price << ")" << endl;
+    cout << "Main Hard Disk Drive: " << chosenHDD.code << " - " << chosenHDD.description << " ($" << chosenHDD.price << ")" << endl;
+    cout << "Total Cost: $" << totalCost << endl;
+
+    return totalCost;
+}
+
+// Task 2 - Ordering additional items
+double task2(double totalCost) {
+    vector<Item> ssdItems;
+    ssdItems.push_back({"D1", "240 GB SSD", 59.99});
+    ssdItems.push_back({"D2", "480 GB SSD", 119.99});
+
+    vector<Item> secondHDDItems;
+    secondHDDItems.push_back({"E1", "1 TB HDD", 49.99});
+    secondHDDItems.push_back({"E2", "2 TB HDD", 89.99});
+    secondHDDItems.push_back({"E3", "4 TB HDD", 129.99});
+
+    vector<Item> opticalDriveItems;
+    opticalDriveItems.push_back({"F1", "DVD/Blu-Ray Player", 50.00});
+    opticalDriveItems.push_back({"F2", "DVD/Blu-Ray Re-writer", 100.00});
+
+    vector<Item> osItems;
+    osItems.push_back({"G1", "Standard Version", 100.00});
+    osItems.push_back({"G2", "Professional Version", 175.00});
+
+    double additionalItemsCost = 0.0;
+
+    while (true) {
+        string choice;
+        cout << "Do you want to purchase additional items? (yes/no): ";
+        cin >> choice;
+
+        if (choice != "yes") {
+            break;
+        }
+
+        // Display and choose additional items
+        string category;
+        cout << "Enter the category for additional items (SSD, Second HDD, OD, OS): ";
+        cin.ignore(); // Clear newline from previous input
+        getline(cin, category);
+
+        vector<Item> additionalItems;
+        if (category == "SSD") {
+            additionalItems = ssdItems;
+        } else if (category == "Second HDD") {
+            additionalItems = secondHDDItems;
+        } else if (category == "OD") {
+            additionalItems = opticalDriveItems;
+        } else if (category == "OS") {
+            additionalItems = osItems;
+        } else {
+            cout << "Invalid category. Please choose from the specified categories." << endl;
+            continue;
+        }
+
+        // Display and choose additional item
+        int additionalChoice = displayAndChoose(additionalItems, category);
+        const Item& chosenAdditionalItem = additionalItems[additionalChoice];
+
+        // Update additional items cost
+        additionalItemsCost += chosenAdditionalItem.price;
+        totalCost += chosenAdditionalItem.price;
+
+        cout << "\nAdditional Item Ordered:" << endl;
+        cout << category << ": " << chosenAdditionalItem.code << " - " << chosenAdditionalItem.description << " ($" << chosenAdditionalItem.price << ")" << endl;
+        cout << "Updated Total Cost: $" << totalCost << endl;
+    }
+
+    return totalCost;
+}
+
+// Task 3 - Offering discounts
+void task3(double totalCost) {
+    double discount = 0.0;
+
+	if (totalCost == 0 && totalCost <=250) {
+        discount = 0.0;
+        cout<<"\nNo Discount Applied....\n";
+    }
+    else if (totalCost > 250 && totalCost <= 500) {
+        discount = 0.05;
+        cout<<"\n5% Discount is Applied....\n";
+    } 
+	else if (totalCost > 500) {
+        discount = 0.10;
+        cout<<"\n10% Discount is Applied....\n";
+    }
+
+    double discountAmount = totalCost * discount;
+    totalCost -= discountAmount;
+
+    cout << "\nDiscount Applied:" << endl;
+    cout << "Total Discount is: $" << discountAmount << endl;
+    cout << "Final Price after Discount: $" << totalCost << endl;
+}
+
+int main() {
+	cout<<"\n You are allowed to choose One Case, One RAM and One Main Hard Disk Drive\n.......................................................................................................\n";
+    double totalCost = task1();
+    totalCost = task2(totalCost);
+    task3(totalCost);
+
+    return 0;
+}
