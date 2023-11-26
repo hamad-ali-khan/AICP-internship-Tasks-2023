@@ -1,0 +1,89 @@
+#include <iostream>
+using namespace std;
+
+class Hexagon {
+private:
+    int s; // Length of one side of the hexagon
+
+public:
+    Hexagon(int s) {
+        this->s = s;
+    }
+
+    double calcArea() {
+        return 1.5 * 1.732 * s;
+    }
+
+    double calcPeri() {
+        return 6 * s;
+    }
+
+    int calcAngleSum() {
+        return 6 * 120; // Sum of all angles of hexagon
+    }
+
+    void display() {
+        cout << "\nArea of Hexagon is: " << calcArea() << endl;
+        cout << "Perimeter of Hexagon is: " << calcPeri() << endl;
+        cout << "Sum of angles of Hexagon is: " << calcAngleSum() << endl;
+    }
+};
+
+class Square {
+private:
+    int s; // Length of one side of the square
+
+public:
+    Square(int s) {
+        this->s = s;
+    }
+
+    double calcAreaSquare() {
+        return s * s;
+    }
+
+    double calcPeriSquare() {
+        return 4 * s;
+    }
+
+    void display() {
+        cout << "\nArea of Square is: " << calcAreaSquare() << endl;
+        cout << "Perimeter of Square is: " << calcPeriSquare() << endl;
+    }
+};
+
+int main() {
+    int cnicLastDigit = 9;
+    //length of one side of the square
+    int squareSide = cnicLastDigit + 1;
+
+    // Create hexagon and square objects
+    Hexagon hexagon(cnicLastDigit);
+    Square square(squareSide);
+
+    // Display menu
+    int choice;
+    do {
+        cout << "\n\nEnter 1 to Calculate hexagon details (Area, Perimeter, Sum of Angles)" << endl;
+        cout << "Enter 2 to Calculate square details (Area, Perimeter)" << endl;
+        cout << "Enter any other key to Exit the Program" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                hexagon.display();
+                break;
+            case 2:
+                square.display();
+                break;
+                case 0:
+                    cout << "\n\nExiting the Program" << endl;
+                break;
+            default:
+            cout << "Exiting the Program" << endl;
+        }
+    }
+    while (choice !=0);
+    return 0;
+}
