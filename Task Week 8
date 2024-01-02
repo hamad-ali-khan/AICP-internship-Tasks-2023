@@ -1,0 +1,121 @@
+#include <iostream>
+#include <iomanip>
+
+// Constants
+const int NUM_BOATS = 10;
+const int OPENING_HOUR = 10;
+const int CLOSING_HOUR = 17;
+const double HOURLY_RATE = 20.0;
+const double HALF_HOUR_RATE = 12.0;
+
+// Boat structure to store information for each boat
+struct Boat {
+    bool isAvailable;
+    double moneyTaken;
+    int totalHoursHired;
+    int returnTime;
+};
+
+// Function prototypes
+void calculateDailyProfits(Boat boats[]);
+int findNextAvailableBoat(Boat boats[], int currentTime);
+void calculateTotalMoneyAndHours(Boat boats[], double& totalMoney, int& totalHours);
+void printBoatUsageReport(Boat boats[]);
+
+int main() {
+    // Array of Boat structures to represent each boat
+    Boat boats[NUM_BOATS];
+
+    // Initialize boat information
+    for (int i = 0; i < NUM_BOATS; ++i) {
+        boats[i].isAvailable = true;
+        boats[i].moneyTaken = 0.0;
+        boats[i].totalHoursHired = 0;
+        boats[i].returnTime = OPENING_HOUR;
+    }
+
+    // Task 1 - Calculate the money taken in a day for one boat
+    calculateDailyProfits(boats);
+
+    // Task 2 - Find the next boat available
+    int currentTime;
+    std::cout << "Enter the current time (in 24-hour format): ";
+    std::cin >> currentTime;
+    int nextAvailableBoat = findNextAvailableBoat(boats, currentTime);
+    if (nextAvailableBoat != -1) {
+        std::cout << "Boat " << (nextAvailableBoat + 1) << " is available for hire." << std::endl;
+    } else {
+        std::cout << "No boats are currently available. The earliest available time is " << currentTime + 1 << ":00." << std::endl;
+    }
+
+    // Task 3 - Calculate the money taken for all the boats at the end of the day
+    double totalMoney;
+    int totalHours;
+    calculateTotalMoneyAndHours(boats, totalMoney, totalHours);
+    printBoatUsageReport(boats);
+
+    std::cout << "\nTotal money taken for all boats: $" << totalMoney << std::endl;
+    std::cout << "Total number of hours boats were hired: " << totalHours << " hours" << std::endl;
+
+    return 0;
+}
+
+// Task 1
+void calculateDailyProfits(Boat boats[]) {
+    for (int i = 0; i < NUM_BOATS; ++i) {
+        if (boats[i].isAvailable) {
+            int hireDuration;
+            std::cout << "Enter the hire duration for Boat " << (i + 1) << " (in minutes): ";
+            std::cin >> hireDuration;
+
+            if (hireDuration == 30 || hireDuration == 60) {
+                // Valid hire duration
+                double rate = (hireDuration == 60) ? HOURLY_RATE : HALF_HOUR_RATE;
+                double payment = (rate / 60.0) * hireDuration;
+
+                // Update boat information
+                boats[i].isAvailable = false;
+                boats[i].moneyTaken += payment;
+                boats[i].totalHoursHired += (hireDuration / 60);
+                boats[i].returnTime += (hireDuration / 60);
+
+                // Output information for the boat
+                std::cout << "Boat " << (i + 1) << " hired for " << hireDuration << " minutes. Payment: $" << payment << std::endl;
+            } else {
+                // Invalid hire duration
+                std::cout << "Error: Invalid hire duration. Please enter 30 or 60 minutes." << std::endl;
+                --i; // Retry for the same boat
+            }
+        } else {
+            // Boat is not available
+            std::cout << "Boat " << (i + 1) << " is not available for hire at the moment." << std::endl;
+        }
+    }
+}
+
+// Task 2
+int findNextAvailableBoat(Boat boats[], int currentTime) {
+    for (int i = 0; i < NUM_BOATS; ++i) {
+        if (boats[i].returnTime <= currentTime && boats[i].isAvailable) {
+            return i; // Return the index of the first available boat
+        }
+    }
+    return -1; // No available boat at the current time
+}
+
+// Task 3
+void calculateTotalMoneyAndHours(Boat boats[], double& totalMoney, int& totalHours) {
+    totalMoney = 0.0;
+    totalHours = 0;
+    for (int i = 0; i < NUM_BOATS; ++i) {
+        totalMoney += boats[i].moneyTaken;
+        totalHours += boats[i].totalHoursHired;
+    }
+}
+
+void printBoatUsageReport(Boat boats[]) {
+    std::cout << "\nBoat Usage Report:\n";
+    for (int i = 0; i < NUM_BOATS; ++i) {
+        std::cout << "Boat " << (i + 1) << ": Total hours hired - " << boats[i].totalHoursHired << " hours, Money taken - $" << boats[i].moneyTaken << std::endl;
+    }
+}
